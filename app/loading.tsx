@@ -1,0 +1,2 @@
+import { Skeleton } from "@/components/ui/Skeleton";
+export default function Loading() { return <main className="min-h-screen bg-brand-background p-8"><div className="mx-auto max-w-7xl space-y-6"><div className="flex items-center gap-3 text-brand-primary"><Skeleton className="h-10 w-10 rounded-full" /><span className="animate-pulse text-sm font-semibold">Loading trading workspace…</span></div><div className="h-1 overflow-hidden rounded bg-white/10"><div className="h-full w-1/3 animate-pulse rounded bg-brand-primary" /></div></div></main>; }

@@ -1,0 +1,2 @@
+import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
+export default function CopyLoading() { return <div className="space-y-6"><Skeleton className="h-20 w-1/2" /><div className="rounded-2xl border border-white/10 p-5">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="mb-3 h-14 w-full" />)}</div><div className="grid grid-cols-1 gap-4 sm:grid-cols-4">{Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}</div></div>; }

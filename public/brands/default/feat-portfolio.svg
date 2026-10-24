@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 360" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="ptBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141C16" />
+      <stop offset="100%" stop-color="#0A0E0B" />
+    </linearGradient>
+  </defs>
+
+  <rect width="540" height="360" rx="16" fill="url(#ptBg)" stroke="#00FF61" stroke-opacity="0.15" stroke-width="1"/>
+
+  <g transform="translate(50, 45)">
+    <!-- Main Card -->
+    <rect width="440" height="270" rx="14" fill="#111813" stroke="#00FF61" stroke-opacity="0.3" stroke-width="1"/>
+
+    <!-- Left: Donut Chart -->
+    <g transform="translate(90, 100)">
+      <!-- Donut circles with stroke-dasharray -->
+      <circle cx="0" cy="0" r="55" stroke="#222" stroke-width="20" fill="none"/>
+      <!-- Crypto slice 45% (dash ~ 155 of 345) -->
+      <circle cx="0" cy="0" r="55" stroke="#00FF61" stroke-width="20" fill="none" stroke-dasharray="155 345" stroke-dashoffset="0"/>
+      <!-- Forex slice 30% -->
+      <circle cx="0" cy="0" r="55" stroke="#38BDF8" stroke-width="20" fill="none" stroke-dasharray="103 345" stroke-dashoffset="-155"/>
+      <!-- Stocks slice 15% -->
+      <circle cx="0" cy="0" r="55" stroke="#F59E0B" stroke-width="20" fill="none" stroke-dasharray="52 345" stroke-dashoffset="-258"/>
+      <!-- Commodities slice 10% -->
+      <circle cx="0" cy="0" r="55" stroke="#EC4899" stroke-width="20" fill="none" stroke-dasharray="35 345" stroke-dashoffset="-310"/>
+
+      <text x="0" y="-4" font-family="ui-monospace, monospace" font-size="14" font-weight="800" fill="#F8FAF7" text-anchor="middle">50+</text>
+      <text x="0" y="12" font-family="system-ui, sans-serif" font-size="9" fill="#A7B0A0" text-anchor="middle">ASSETS</text>
+    </g>
+
+    <!-- Legend (Left lower) -->
+    <g transform="translate(30, 185)">
+      <circle cx="10" cy="10" r="4" fill="#00FF61"/>
+      <text x="20" y="14" font-family="system-ui, sans-serif" font-size="11" fill="#F8FAF7">Crypto 45%</text>
+
+      <circle cx="100" cy="10" r="4" fill="#38BDF8"/>
+      <text x="110" y="14" font-family="system-ui, sans-serif" font-size="11" fill="#F8FAF7">Forex 30%</text>
+
+      <circle cx="10" cy="30" r="4" fill="#F59E0B"/>
+      <text x="20" y="34" font-family="system-ui, sans-serif" font-size="11" fill="#F8FAF7">Stocks 15%</text>
+
+      <circle cx="100" cy="30" r="4" fill="#EC4899"/>
+      <text x="110" y="34" font-family="system-ui, sans-serif" font-size="11" fill="#F8FAF7">Commodities 10%</text>
+    </g>
+
+    <!-- Right Side: Net Worth & Allocation metrics -->
+    <g transform="translate(210, 30)">
+      <text x="0" y="20" font-family="system-ui, sans-serif" font-size="12" fill="#A7B0A0">Consolidated Net Portfolio</text>
+      <text x="0" y="55" font-family="ui-monospace, monospace" font-size="32" font-weight="900" fill="#F8FAF7">$284,590.22</text>
+      <text x="0" y="76" font-family="ui-monospace, monospace" font-size="13" font-weight="700" fill="#00FF61">+24.8% All-Time ROI (+$56,918)</text>
+
+      <!-- Asset breakdown bars -->
+      <g transform="translate(0, 95)">
+        <text x="0" y="12" font-family="system-ui, sans-serif" font-size="11" fill="#A7B0A0">Bitcoin &amp; Major Crypto</text>
+        <text x="200" y="12" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#F8FAF7" text-anchor="end">$128,065.60</text>
+        <rect x="0" y="18" width="200" height="6" rx="3" fill="#222"/>
+        <rect x="0" y="18" width="90" height="6" rx="3" fill="#00FF61"/>
+
+        <text x="0" y="42" font-family="system-ui, sans-serif" font-size="11" fill="#A7B0A0">EUR/USD, GBP/USD Forex</text>
+        <text x="200" y="42" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#F8FAF7" text-anchor="end">$85,377.06</text>
+        <rect x="0" y="48" width="200" height="6" rx="3" fill="#222"/>
+        <rect x="0" y="48" width="60" height="6" rx="3" fill="#38BDF8"/>
+
+        <text x="0" y="72" font-family="system-ui, sans-serif" font-size="11" fill="#A7B0A0">Equities &amp; Index Funds</text>
+        <text x="200" y="72" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#F8FAF7" text-anchor="end">$42,688.53</text>
+        <rect x="0" y="78" width="200" height="6" rx="3" fill="#222"/>
+        <rect x="0" y="78" width="30" height="6" rx="3" fill="#F59E0B"/>
+      </g>
+    </g>
+  </g>
+</svg>

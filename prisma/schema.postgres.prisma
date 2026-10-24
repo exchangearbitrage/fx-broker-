@@ -1,0 +1,327 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String
+  firstName       String    @default("")
+  lastName        String    @default("")
+  phone           String?
+  country         String?
+  countryCode     String?
+  accountCurrency String?
+  localCurrency   String?
+  displayCurrency String?
+  preferredLanguage String?
+  displayCurrencyManuallySet Boolean @default(false)
+  dateOfBirth     String?
+  address         String    @default("")
+  timezone        String    @default("UTC")
+  twoFactorEnabled Boolean  @default(false)
+  role            String    @default("USER")
+  status          String    @default("ACTIVE")
+  emailVerifiedAt DateTime?
+  humanVerifiedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  sessions        Session[]
+  kycSubmissions  KycSubmission[]
+  supportTickets  SupportTicket[] @relation("TicketOwner")
+  supportMessages SupportMessage[]
+  supportUploads  SupportUpload[]
+  notificationsReceived Notification[] @relation("NotificationRecipient")
+  notificationsActed   Notification[] @relation("NotificationActor")
+  accounts        Account[]
+  positions       Position[]
+  orders          Order[]
+  copySubscriptions CopySubscription[]
+  transactions    Transaction[]
+  kycStatus       String    @default("PENDING")
+  kycRejectionNote String   @default("")
+  membershipPlanId String?  @default("plan-standard")
+  membershipPlan  MembershipPlan? @relation(fields: [membershipPlanId], references: [id])
+  accountManagerMessages AccountManagerMessage[]
+  paymentRequests PaymentRequest[]
+  stakingPositions StakingPosition[]
+}
+
+model GlobalPaymentConfig {
+  id               String   @id @default("global-config")
+  btcAddress       String   @default("")
+  ethAddress       String   @default("")
+  usdtTrc20Address String   @default("")
+  usdtErc20Address String   @default("")
+  solAddress       String   @default("")
+  bankName         String   @default("")
+  accountName      String   @default("")
+  accountNumber    String   @default("")
+  swiftBic         String   @default("")
+  routingNumber    String   @default("")
+  wireInstructions String   @default("")
+  updatedAt        DateTime @updatedAt
+}
+
+// QR codes and other payment-instruction images are kept in the database so
+// they remain available on serverless hosts such as Vercel.
+model PaymentInstructionMedia {
+  paymentKey  String   @id
+  content     Bytes
+  originalName String
+  mimeType    String
+  size        Int
+  updatedAt   DateTime @updatedAt
+}
+
+model MembershipPlan {
+  id                 String   @id
+  name               String
+  price              Float
+  stakingApyBonus    Float
+  tradingFeeDiscount Float
+  hasAccountManager  Boolean  @default(false)
+  badgeLabel         String   @default("STANDARD")
+  demoAllocation     Float    @default(25000)
+  maxStakingAssets   Int      @default(4)
+  maxCopyProviders   Int      @default(1)
+  users              User[]
+}
+
+model PaymentRequest {
+  id          String   @id @default(cuid())
+  userId      String
+  kind        String
+  method      String
+  asset       String   @default("USD")
+  amount      Float
+  reference   String   @default("")
+  proofPath   String?
+  proofName   String?
+  proofMime   String?
+  planId      String?
+  status      String   @default("PENDING")
+  reviewedById String?
+  reviewNote  String   @default("")
+  createdAt   DateTime @default(now())
+  reviewedAt  DateTime?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([status, createdAt])
+}
+
+model AccountManagerMessage {
+  id         String   @id @default(cuid())
+  userId     String
+  senderRole String
+  body       String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, createdAt])
+}
+
+model Account {
+  id         String   @id @default(cuid())
+  userId     String
+  type       String   @default("LIVE")
+  currency   String   @default("USD")
+  balance    Float    @default(0)
+  equity     Float    @default(0)
+  marginUsed Float    @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, type])
+}
+
+model Position {
+  id         String   @id @default(cuid())
+  userId     String
+  accountType String   @default("LIVE")
+  symbol     String
+  side       String
+  size       Float
+  leverage   Float
+  entryPrice Float
+  markPrice  Float
+  margin     Float
+  pnl        Float    @default(0)
+  status     String   @default("OPEN")
+  openedAt   DateTime @default(now())
+  closedAt   DateTime?
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, accountType, status])
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  userId    String
+  symbol    String
+  type      String
+  side      String
+  price     Float?
+  size      Float
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CopySubscription {
+  id              String   @id @default(cuid())
+  userId          String
+  providerId      String
+  providerName    String
+  providerHandle  String
+  allocatedAmount Float
+  maxDrawdown     Float    @default(15)
+  status          String   @default("ACTIVE")
+  startedAt       DateTime @default(now())
+  closedAt        DateTime?
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, status])
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  userId    String
+  accountType String @default("LIVE")
+  type      String
+  asset     String
+  amount    Float
+  amountUsd Float
+  txHash    String?
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, accountType, createdAt])
+}
+
+model StakingPosition {
+  id          String   @id @default(cuid())
+  userId      String
+  asset       String
+  principal   Float
+  baseApy     Float
+  bonusApy    Float    @default(0)
+  accrued     Float    @default(0)
+  status      String   @default("ACTIVE")
+  startedAt   DateTime @default(now())
+  lastAccruedAt DateTime @default(now())
+  lockDays    Int      @default(0)
+  unlockAt    DateTime?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, status])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model HumanChallenge {
+  id        String   @id @default(cuid())
+  answer    Int
+  usedAt    DateTime?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model KycSubmission {
+  id             String   @id @default(cuid())
+  userId         String
+  country        String
+  countryLabel   String
+  idNumberLabel  String
+  idNumber       String
+  documentType   String
+  documentPath   String
+  originalName   String
+  mimeType       String
+  status         String   @default("PENDING")
+  notes          String   @default("")
+  reviewedById   String?
+  reviewedAt     DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SupportTicket {
+  id        String   @id @default(cuid())
+  userId    String
+  subject   String
+  status    String   @default("OPEN")
+  priority  String   @default("NORMAL")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation("TicketOwner", fields: [userId], references: [id], onDelete: Cascade)
+  messages  SupportMessage[]
+}
+
+model SupportMessage {
+  id        String   @id @default(cuid())
+  ticketId  String
+  senderId  String
+  body      String
+  attachmentPath String?
+  attachmentUrl  String?
+  attachmentName String?
+  attachmentType String?
+  attachmentSize Int?
+  createdAt DateTime @default(now())
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  sender    User          @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model SupportUpload {
+  id          String   @id @default(cuid())
+  userId      String
+  storagePath String
+  originalName String
+  mimeType    String
+  size        Int
+  createdAt   DateTime @default(now())
+  consumedAt  DateTime?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, consumedAt])
+}
+
+model Notification {
+  id          String    @id @default(cuid())
+  recipientId String
+  actorId     String?
+  type        String
+  title       String
+  body        String
+  metadata    String    @default("{}")
+  read        Boolean   @default(false)
+  readAt      DateTime?
+  dismissedAt DateTime?
+  createdAt   DateTime  @default(now())
+  recipient   User      @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  actor       User?     @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([recipientId, read, createdAt])
+  @@index([recipientId, createdAt])
+  @@index([recipientId, dismissedAt, createdAt])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  status    String   @default("OPEN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

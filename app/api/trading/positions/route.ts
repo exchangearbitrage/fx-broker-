@@ -1,0 +1,10 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth/session";
+import { prisma } from "@/lib/db";
+
+function accountTypeFrom(request: NextRequest) { const type = request.nextUrl.searchParams.get("accountType"); return type === "LIVE" || type === "DEMO" ? type : "LIVE"; }
+
+export async function GET(request: NextRequest) { const user = await getCurrentUser(); if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 }); const accountType = accountTypeFrom(request); return NextResponse.json(await prisma.position.findMany({ where: { userId: user.id, accountType, status: "OPEN" }, orderBy: { openedAt: "desc" } })); }
+export async function POST(request: NextRequest) { const user = await getCurrentUser(); if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 }); const body = await request.json(); const accountType = body.accountType === "DEMO" ? "DEMO" : "LIVE"; if (!body.symbol || !["BUY", "SELL"].includes(body.side) || !Number(body.size)) return NextResponse.json({ error: "Invalid position" }, { status: 400 }); const position = await prisma.position.create({ data: { userId: user.id, accountType, symbol: body.symbol, side: body.side, size: Number(body.size), leverage: Number(body.leverage ?? 1), entryPrice: Number(body.entryPrice), markPrice: Number(body.markPrice ?? body.entryPrice), margin: Number(body.margin ?? 0) } }); return NextResponse.json(position, { status: 201 }); }
+export async function PATCH(request: NextRequest) { const user = await getCurrentUser(); if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 }); const { id, markPrice, pnl, accountType } = await request.json(); const result = await prisma.position.updateMany({ where: { id, userId: user.id, accountType: accountType === "DEMO" ? "DEMO" : "LIVE", status: "OPEN" }, data: { status: "CLOSED", markPrice: Number(markPrice ?? 0), pnl: Number(pnl ?? 0), closedAt: new Date() } }); return NextResponse.json({ ok: Boolean(result.count) }, { status: result.count ? 200 : 404 }); }
+export async function DELETE(request: NextRequest) { return PATCH(request); }

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 360" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141C16" />
+      <stop offset="100%" stop-color="#0A0E0B" />
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1B261E" />
+      <stop offset="100%" stop-color="#111813" />
+    </linearGradient>
+    <linearGradient id="greenGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00FF61" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#00D050" stop-opacity="0.2" />
+    </linearGradient>
+    <linearGradient id="curveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00FF61" />
+      <stop offset="50%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#00FF61" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="540" height="360" rx="16" fill="url(#bgGrad)" stroke="#00FF61" stroke-opacity="0.15" stroke-width="1"/>
+
+  <!-- Grid lines -->
+  <path d="M40 70 H500 M40 140 H500 M40 210 H500 M40 280 H500" stroke="#FFFFFF" stroke-opacity="0.04" stroke-width="1" stroke-dasharray="4 4"/>
+  <path d="M120 40 V320 M240 40 V320 M360 40 V320 M480 40 V320" stroke="#FFFFFF" stroke-opacity="0.04" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- Master Trader Card (Left Top) -->
+  <g transform="translate(45, 45)">
+    <rect width="210" height="120" rx="12" fill="url(#cardGrad)" stroke="#00FF61" stroke-opacity="0.25" stroke-width="1"/>
+    <!-- Trader Avatar -->
+    <circle cx="35" cy="40" r="18" fill="#00FF61" fill-opacity="0.15"/>
+    <text x="35" y="45" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#00FF61" text-anchor="middle">AT</text>
+    
+    <text x="65" y="36" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="#F8FAF7">Alpha_Trader</text>
+    <text x="65" y="52" font-family="system-ui, sans-serif" font-size="11" fill="#A7B0A0">Verified Master · Pro</text>
+
+    <!-- Stats row -->
+    <rect x="20" y="75" width="80" height="30" rx="6" fill="#000000" fill-opacity="0.4"/>
+    <text x="28" y="88" font-family="system-ui, sans-serif" font-size="9" fill="#A7B0A0">30D ROI</text>
+    <text x="28" y="101" font-family="ui-monospace, monospace" font-size="12" font-weight="700" fill="#00FF61">+142.8%</text>
+
+    <rect x="110" y="75" width="80" height="30" rx="6" fill="#000000" fill-opacity="0.4"/>
+    <text x="118" y="88" font-family="system-ui, sans-serif" font-size="9" fill="#A7B0A0">COPIERS</text>
+    <text x="118" y="101" font-family="ui-monospace, monospace" font-size="12" font-weight="700" fill="#F8FAF7">3,492</text>
+  </g>
+
+  <!-- Mirroring Connection Animation Ray -->
+  <path d="M 255 105 C 320 105, 220 225, 285 225" stroke="#00FF61" stroke-width="2" stroke-dasharray="6 4" stroke-opacity="0.6"/>
+  <circle cx="270" cy="165" r="14" fill="#00FF61" fill-opacity="0.15" stroke="#00FF61" stroke-width="1.5"/>
+  <path d="M266 165 L274 165 M270 161 L274 165 L270 169" stroke="#00FF61" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Your Account Sync Card (Right Bottom) -->
+  <g transform="translate(285, 175)">
+    <rect width="210" height="135" rx="12" fill="url(#cardGrad)" stroke="#00FF61" stroke-opacity="0.4" stroke-width="1.5"/>
+    <rect x="16" y="16" width="60" height="20" rx="10" fill="#00FF61" fill-opacity="0.15"/>
+    <text x="46" y="30" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#00FF61" text-anchor="middle">SYNC ACTIVE</text>
+    <circle cx="24" cy="26" r="3" fill="#00FF61"/>
+
+    <text x="16" y="60" font-family="system-ui, sans-serif" font-size="12" fill="#A7B0A0">Your Mirrored Balance</text>
+    <text x="16" y="85" font-family="ui-monospace, monospace" font-size="22" font-weight="800" fill="#F8FAF7">$14,892.40</text>
+    <text x="16" y="102" font-family="ui-monospace, monospace" font-size="11" font-weight="600" fill="#00FF61">+$1,420.30 today (100% matched)</text>
+
+    <!-- Mini Profit Curve inside card -->
+    <path d="M120 120 Q 150 90, 170 105 T 200 70" fill="none" stroke="url(#curveGrad)" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+</svg>

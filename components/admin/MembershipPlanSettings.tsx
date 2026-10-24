@@ -1,0 +1,18 @@
+"use client";
+
+import { FormEvent, useEffect, useState } from "react";
+
+type Plan = { id: string; name: string; badgeLabel: string; price: number };
+type Draft = { id?: string; name: string; badgeLabel: string; price: string };
+const emptyDraft: Draft = { name: "", badgeLabel: "STANDARD", price: "0" };
+
+export function MembershipPlanSettings() {
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [draft, setDraft] = useState<Draft>(emptyDraft);
+  const [message, setMessage] = useState("");
+  const load = async () => { const response = await fetch("/api/admin/membership-plans", { cache: "no-store" }); if (response.ok) setPlans(await response.json()); };
+  useEffect(() => { void load(); }, []);
+  const submit = async (event: FormEvent) => { event.preventDefault(); setMessage(""); const response = await fetch("/api/admin/membership-plans", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...draft, price: Number(draft.price) }) }); const data = await response.json().catch(() => null) as { error?: string } | null; if (!response.ok) { setMessage(data?.error ?? "We couldn’t save this package."); return; } setDraft(emptyDraft); setMessage("Membership package saved."); await load(); };
+  return <section className="mt-6 rounded-2xl border border-white/10 bg-brand-surface p-5"><p className="text-xs font-semibold uppercase tracking-widest text-brand-primary">Membership configuration</p><h2 className="mt-1 font-heading text-xl font-bold text-white">Membership packages</h2><p className="mt-1 text-sm text-brand-secondary">Create or edit the package name, visible tag, and USD price. Other benefits remain at their existing defaults.</p><form onSubmit={submit} className="mt-5 grid gap-3 sm:grid-cols-4"><label className="text-xs text-brand-secondary">Package name<input required value={draft.name} onChange={(event) => setDraft((current) => ({ ...current, name: event.target.value }))} className="mt-1 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white" placeholder="Pro Trader" /></label><label className="text-xs text-brand-secondary">Tag<input required value={draft.badgeLabel} onChange={(event) => setDraft((current) => ({ ...current, badgeLabel: event.target.value }))} className="mt-1 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white" placeholder="PRO" /></label><label className="text-xs text-brand-secondary">Price (USD)<input required min="0" step="0.01" type="number" value={draft.price} onChange={(event) => setDraft((current) => ({ ...current, price: event.target.value }))} className="mt-1 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white" /></label><button className="self-end rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-black">{draft.id ? "Save package" : "Add package"}</button></form>{message ? <p className="mt-3 text-sm text-brand-primary">{message}</p> : null}<div className="mt-5 divide-y divide-white/10">{plans.map((plan) => <div key={plan.id} className="flex flex-wrap items-center justify-between gap-3 py-3"><div><p className="font-semibold text-white">{plan.name} <span className="ml-2 rounded-full bg-white/10 px-2 py-1 text-[10px]">{plan.badgeLabel}</span></p><p className="mt-1 text-xs text-brand-secondary">${plan.price.toFixed(2)} USD</p></div><button type="button" onClick={() => setDraft({ id: plan.id, name: plan.name, badgeLabel: plan.badgeLabel, price: String(plan.price) })} className="rounded-lg border border-white/10 px-3 py-2 text-xs text-white">Edit</button></div>)}{plans.length === 0 ? <p className="py-4 text-sm text-brand-secondary">No packages configured.</p> : null}</div></section>;
+}
+

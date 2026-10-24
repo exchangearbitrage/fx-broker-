@@ -1,0 +1,17 @@
+.next
+node_modules
+dist
+coverage
+.env
+.env.local
+*.log
+dev.db
+*.db
+*.db-journal
+uploads
+.qa
+.npm-cache
+.playwright-cli
+output
+.local-cache
+tsconfig.tsbuildinfo

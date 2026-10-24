@@ -1,0 +1,1 @@
+export function friendlyError(response: Response, fallback = "We could not complete that request. Please try again.") { if (response.status === 401) return "Please sign in again and retry."; if (response.status === 429) return "Please wait a moment before trying again."; return fallback; }

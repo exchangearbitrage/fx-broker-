@@ -1,0 +1,2 @@
+import { PaymentSettings } from "@/components/admin/PaymentSettings";
+export default function PaymentsPage() { return <><p className="text-xs font-semibold uppercase tracking-widest text-brand-primary">Global configuration</p><h1 className="mt-2 font-heading text-3xl font-bold text-white">Deposit details</h1><p className="mt-2 text-sm text-brand-secondary">These details are the single source of truth for every authenticated user’s deposit instructions.</p><PaymentSettings /></>; }

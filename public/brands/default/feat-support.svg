@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 360" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="spBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141C16" />
+      <stop offset="100%" stop-color="#0A0E0B" />
+    </linearGradient>
+  </defs>
+
+  <rect width="540" height="360" rx="16" fill="url(#spBg)" stroke="#00FF61" stroke-opacity="0.15" stroke-width="1"/>
+
+  <g transform="translate(60, 45)">
+    <!-- Chat Container -->
+    <rect width="420" height="270" rx="14" fill="#111813" stroke="#00FF61" stroke-opacity="0.3" stroke-width="1"/>
+
+    <!-- Support Header -->
+    <rect x="0" y="0" width="420" height="55" rx="14" fill="#18221B"/>
+    <circle cx="35" cy="28" r="16" fill="#00FF61" fill-opacity="0.2"/>
+    <text x="35" y="33" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#00FF61" text-anchor="middle">CS</text>
+    <circle cx="45" cy="38" r="4" fill="#00FF61"/>
+
+    <text x="65" y="25" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="#F8FAF7">Live Broker Desk Support</text>
+    <text x="65" y="42" font-family="system-ui, sans-serif" font-size="11" fill="#00FF61">● Online Now · Human Specialists (No Bots)</text>
+
+    <!-- Response metric badge -->
+    <rect x="300" y="14" width="100" height="26" rx="6" fill="#000000" fill-opacity="0.5"/>
+    <text x="350" y="31" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#00FF61" text-anchor="middle">&lt; 2m 40s wait</text>
+
+    <!-- Message 1: User -->
+    <g transform="translate(140, 75)">
+      <rect width="260" height="42" rx="10" fill="#25352A"/>
+      <text x="14" y="26" font-family="system-ui, sans-serif" font-size="12" fill="#F8FAF7">Can you assist with setting my 50x stop-loss?</text>
+    </g>
+
+    <!-- Message 2: Agent Response -->
+    <g transform="translate(20, 130)">
+      <rect width="320" height="58" rx="10" fill="#18221B" stroke="#00FF61" stroke-opacity="0.3" stroke-width="1"/>
+      <text x="14" y="24" font-family="system-ui, sans-serif" font-size="12" fill="#F8FAF7">Certainly! Your stop-loss is set at $66,800.</text>
+      <text x="14" y="44" font-family="system-ui, sans-serif" font-size="11" fill="#00FF61">✓ Slippage guard and negative balance buffer active.</text>
+    </g>
+
+    <!-- Bottom Features Pill -->
+    <g transform="translate(20, 210)">
+      <rect width="380" height="36" rx="8" fill="#141C16" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1"/>
+      <text x="25" y="23" font-family="system-ui, sans-serif" font-size="11" fill="#A7B0A0">🌐 8 Languages Supported</text>
+      <text x="195" y="23" font-family="system-ui, sans-serif" font-size="11" fill="#A7B0A0">🔒 End-to-End Encrypted</text>
+      <text x="330" y="23" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#00FF61">24/7/365</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 360" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="exBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141C16" />
+      <stop offset="100%" stop-color="#0A0E0B" />
+    </linearGradient>
+    <linearGradient id="flashGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00FF61" />
+      <stop offset="100%" stop-color="#22C55E" stop-opacity="0.2" />
+    </linearGradient>
+  </defs>
+
+  <rect width="540" height="360" rx="16" fill="url(#exBg)" stroke="#00FF61" stroke-opacity="0.15" stroke-width="1"/>
+
+  <!-- Speedometer / Millisecond Counter -->
+  <g transform="translate(60, 60)">
+    <rect width="420" height="110" rx="12" fill="#111813" stroke="#00FF61" stroke-opacity="0.3" stroke-width="1"/>
+    
+    <!-- Lightning Badge -->
+    <circle cx="50" cy="55" r="24" fill="#00FF61" fill-opacity="0.15"/>
+    <path d="M52 38 L43 54 H51 L48 70 L60 52 H51 Z" fill="#00FF61"/>
+
+    <text x="95" y="45" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#A7B0A0" letter-spacing="1">ULTRA-LOW LATENCY ROUTING</text>
+    <text x="95" y="85" font-family="ui-monospace, monospace" font-size="42" font-weight="900" fill="#00FF61">&lt;7.8 ms</text>
+    <text x="280" y="80" font-family="system-ui, sans-serif" font-size="13" font-weight="500" fill="#F8FAF7">Average Fill Speed</text>
+    <text x="280" y="98" font-family="system-ui, sans-serif" font-size="11" fill="#A7B0A0">Zero Last-Look · 0.0 Pips Spread</text>
+  </g>
+
+  <!-- Real-time Order Book Simulation -->
+  <g transform="translate(60, 195)">
+    <!-- Bids (Green) -->
+    <rect x="0" y="0" width="200" height="105" rx="10" fill="#111813" stroke="#00FF61" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="16" y="24" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#00FF61">BUY ORDERS (MATCHED)</text>
+    
+    <rect x="16" y="36" width="168" height="16" rx="4" fill="#00FF61" fill-opacity="0.1"/>
+    <text x="24" y="48" font-family="ui-monospace, monospace" font-size="11" fill="#00FF61">67,240.50</text>
+    <text x="150" y="48" font-family="ui-monospace, monospace" font-size="11" fill="#F8FAF7">14.2 BTC</text>
+
+    <rect x="16" y="58" width="140" height="16" rx="4" fill="#00FF61" fill-opacity="0.1"/>
+    <text x="24" y="70" font-family="ui-monospace, monospace" font-size="11" fill="#00FF61">67,240.00</text>
+    <text x="150" y="70" font-family="ui-monospace, monospace" font-size="11" fill="#F8FAF7">8.9 BTC</text>
+
+    <rect x="16" y="80" width="110" height="16" rx="4" fill="#00FF61" fill-opacity="0.1"/>
+    <text x="24" y="92" font-family="ui-monospace, monospace" font-size="11" fill="#00FF61">67,239.50</text>
+    <text x="150" y="92" font-family="ui-monospace, monospace" font-size="11" fill="#F8FAF7">5.1 BTC</text>
+
+    <!-- Asks / Execution confirmation (Right) -->
+    <rect x="220" y="0" width="200" height="105" rx="10" fill="#111813" stroke="#34D399" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="236" y="24" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#34D399">EXECUTION ENGINE</text>
+    
+    <circle cx="250" cy="55" r="14" fill="#00FF61" fill-opacity="0.2"/>
+    <path d="M246 55 L249 58 L255 52" stroke="#00FF61" stroke-width="2" stroke-linecap="round"/>
+    <text x="272" y="58" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#F8FAF7">Instant Fill Confirmed</text>
+    
+    <text x="236" y="88" font-family="ui-monospace, monospace" font-size="11" fill="#A7B0A0">Slippage: </text>
+    <text x="295" y="88" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#00FF61">0.000% (Protected)</text>
+  </g>
+</svg>

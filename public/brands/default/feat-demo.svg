@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 360" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="dmBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141C16" />
+      <stop offset="100%" stop-color="#0A0E0B" />
+    </linearGradient>
+  </defs>
+
+  <rect width="540" height="360" rx="16" fill="url(#dmBg)" stroke="#00FF61" stroke-opacity="0.15" stroke-width="1"/>
+
+  <g transform="translate(60, 50)">
+    <!-- Main Demo Environment Card -->
+    <rect width="420" height="260" rx="14" fill="#111813" stroke="#00FF61" stroke-opacity="0.3" stroke-width="1"/>
+
+    <!-- Header bar -->
+    <rect x="20" y="20" width="100" height="24" rx="12" fill="#00FF61" fill-opacity="0.15"/>
+    <text x="70" y="36" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#00FF61" text-anchor="middle">DEMO MODE</text>
+    <circle cx="32" cy="32" r="3" fill="#00FF61"/>
+
+    <text x="300" y="36" font-family="system-ui, sans-serif" font-size="11" fill="#A7B0A0">Zero Risk · Live Feeds</text>
+
+    <!-- Virtual Balance Display -->
+    <text x="20" y="75" font-family="system-ui, sans-serif" font-size="12" fill="#A7B0A0">Virtual Practice Capital</text>
+    <text x="20" y="115" font-family="ui-monospace, monospace" font-size="38" font-weight="900" fill="#F8FAF7">$100,000.00</text>
+    <text x="270" y="112" font-family="ui-monospace, monospace" font-size="13" font-weight="700" fill="#00FF61">+4.2% Simulated P&amp;L</text>
+
+    <!-- Candlestick chart simulation -->
+    <g transform="translate(20, 135)">
+      <!-- Line 1 -->
+      <line x1="30" y1="20" x2="30" y2="70" stroke="#00FF61" stroke-width="1.5"/>
+      <rect x="23" y="30" width="14" height="28" rx="2" fill="#00FF61"/>
+
+      <!-- Line 2 -->
+      <line x1="75" y1="15" x2="75" y2="75" stroke="#FF4D4D" stroke-width="1.5"/>
+      <rect x="68" y="25" width="14" height="35" rx="2" fill="#FF4D4D"/>
+
+      <!-- Line 3 -->
+      <line x1="120" y1="10" x2="120" y2="60" stroke="#00FF61" stroke-width="1.5"/>
+      <rect x="113" y="18" width="14" height="30" rx="2" fill="#00FF61"/>
+
+      <!-- Line 4 -->
+      <line x1="165" y1="5" x2="165" y2="55" stroke="#00FF61" stroke-width="1.5"/>
+      <rect x="158" y="10" width="14" height="32" rx="2" fill="#00FF61"/>
+
+      <!-- Line 5 -->
+      <line x1="210" y1="12" x2="210" y2="68" stroke="#FF4D4D" stroke-width="1.5"/>
+      <rect x="203" y="22" width="14" height="24" rx="2" fill="#FF4D4D"/>
+
+      <!-- Line 6 -->
+      <line x1="255" y1="0" x2="255" y2="50" stroke="#00FF61" stroke-width="1.5"/>
+      <rect x="248" y="5" width="14" height="35" rx="2" fill="#00FF61"/>
+
+      <!-- Line 7 -->
+      <line x1="300" y1="8" x2="300" y2="45" stroke="#00FF61" stroke-width="1.5"/>
+      <rect x="293" y="12" width="14" height="22" rx="2" fill="#00FF61"/>
+
+      <!-- Line 8 -->
+      <line x1="345" y1="2" x2="345" y2="40" stroke="#00FF61" stroke-width="1.5"/>
+      <rect x="338" y="5" width="14" height="25" rx="2" fill="#00FF61"/>
+    </g>
+
+    <!-- Bottom prompt -->
+    <rect x="20" y="215" width="380" height="30" rx="6" fill="#1B261E"/>
+    <text x="32" y="234" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#00FF61">✓ 1-Click switch to live trading account whenever you are ready</text>
+  </g>
+</svg>
