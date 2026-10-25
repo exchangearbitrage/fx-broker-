@@ -44,7 +44,105 @@ export function PortfolioDeepDive({ accounts, positions, stakes, currency = "USD
     <section className="rounded-2xl border border-white/10 bg-brand-surface p-5"><div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-heading text-lg font-bold text-white">Holdings & allocation</h2><p className="mt-1 text-xs text-brand-secondary">Current open holdings only. Closed trades remain in the transaction ledger.</p></div><div className="relative"><Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-brand-secondary" /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search assets" className="rounded-xl border border-white/10 bg-white/5 py-2 pl-8 pr-3 text-xs text-white outline-none focus:border-brand-primary" /></div></div>
       <div className="mt-4 flex flex-wrap gap-2">{["all", "cash", "positions", "staking"].map((item) => <button key={item} type="button" onClick={() => setFilter(item)} className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize ${filter === item ? "bg-brand-primary text-black" : "bg-white/5 text-brand-secondary hover:text-white"}`}>{item === "all" ? "All assets" : item}</button>)}</div>
       <div className="mt-5 grid gap-3 sm:grid-cols-3">{categories.map((item) => <div key={item.category}><div className="flex justify-between text-xs text-brand-secondary"><span className="capitalize">{item.category}</span><span>{total ? ((item.value / total) * 100).toFixed(1) : "0.0"}%</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-brand-primary" style={{ width: `${total ? (item.value / total) * 100 : 0}%` }} /></div></div>)}</div>
-      <div className="mt-5 overflow-x-auto"><table className="w-full min-w-[760px] text-left text-xs"><thead className="border-b border-white/10 text-brand-secondary"><tr><th className="p-3">Asset</th><th className="p-3">Type</th><th className="p-3">Quantity</th><th className="p-3">Entry</th><th className="p-3">Mark</th><th className="p-3">Value</th><th className="p-3">P&amp;L</th><th className="p-3">Trend</th><th className="p-3" /></tr></thead><tbody className="divide-y divide-white/5">{filtered.map((item) => <tr key={item.id}><td className="p-3 font-semibold text-white"><div>{item.symbol}</div><div className="mt-0.5 text-[11px] font-normal text-brand-secondary">{item.name}</div></td><td className="p-3 capitalize text-brand-secondary">{item.category}</td><td className="p-3 font-mono text-white">{item.balance.toLocaleString()}</td><td className="p-3 text-brand-secondary">{formatCurrency(item.avgPrice, currency)}</td><td className="p-3 text-white">{formatCurrency(item.currentPrice, currency)}</td><td className="p-3 font-semibold text-white">{formatCurrency(item.valueUsd, currency)}</td><td className={`p-3 font-semibold ${item.pnl >= 0 ? "text-emerald-400" : "text-rose-400"}`}>{item.pnl >= 0 ? "+" : ""}{formatCurrency(item.pnl, currency)}</td><td className="p-3"><Sparkline points={item.sparkline} positive={item.pnl >= 0} className="h-7 w-20" /></td><td className="p-3 text-right"><Link href="/dashboard/trade" className="text-brand-primary hover:underline">Trade</Link></td></tr>)}{!filtered.length && <tr><td colSpan={9} className="p-8 text-center text-brand-secondary">No matching holdings in this account yet.</td></tr>}</tbody></table></div>
+      {/* Desktop Table */}
+      <div className="mt-5 hidden md:block overflow-x-auto">
+        <table className="w-full min-w-[760px] text-left text-xs">
+          <thead className="border-b border-white/10 text-brand-secondary">
+            <tr>
+              <th className="p-3">Asset</th>
+              <th className="p-3">Type</th>
+              <th className="p-3">Quantity</th>
+              <th className="p-3">Entry</th>
+              <th className="p-3">Mark</th>
+              <th className="p-3">Value</th>
+              <th className="p-3">P&amp;L</th>
+              <th className="p-3">Trend</th>
+              <th className="p-3" />
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/5">
+            {filtered.map((item) => (
+              <tr key={item.id} className="hover:bg-white/[0.02] transition-colors">
+                <td className="p-3 font-semibold text-white">
+                  <div>{item.symbol}</div>
+                  <div className="mt-0.5 text-[11px] font-normal text-brand-secondary">{item.name}</div>
+                </td>
+                <td className="p-3 capitalize text-brand-secondary">{item.category}</td>
+                <td className="p-3 font-mono text-white">{item.balance.toLocaleString()}</td>
+                <td className="p-3 text-brand-secondary">{formatCurrency(item.avgPrice, currency)}</td>
+                <td className="p-3 text-white">{formatCurrency(item.currentPrice, currency)}</td>
+                <td className="p-3 font-semibold text-white">{formatCurrency(item.valueUsd, currency)}</td>
+                <td className={`p-3 font-semibold ${item.pnl >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                  {item.pnl >= 0 ? "+" : ""}{formatCurrency(item.pnl, currency)}
+                </td>
+                <td className="p-3">
+                  <Sparkline points={item.sparkline} positive={item.pnl >= 0} className="h-7 w-20" />
+                </td>
+                <td className="p-3 text-right">
+                  <Link href="/dashboard/trade" className="text-brand-primary hover:underline font-semibold">Trade</Link>
+                </td>
+              </tr>
+            ))}
+            {!filtered.length && (
+              <tr>
+                <td colSpan={9} className="p-8 text-center text-brand-secondary">
+                  No matching holdings in this account yet.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="mt-4 block md:hidden space-y-3">
+        {filtered.map((item) => (
+          <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-white text-base">{item.symbol}</span>
+                  <span className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] uppercase font-semibold text-brand-secondary">
+                    {item.category}
+                  </span>
+                </div>
+                <p className="text-[11px] text-brand-secondary">{item.name}</p>
+              </div>
+              <Link href="/dashboard/trade" className="rounded-lg border border-brand-primary/30 bg-brand-primary/10 px-3 py-1 text-xs font-semibold text-brand-primary hover:bg-brand-primary/20">
+                Trade
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 rounded-lg bg-black/25 p-2.5 text-xs font-mono">
+              <div>
+                <span className="text-[10px] text-brand-secondary uppercase block font-sans">Quantity</span>
+                <span className="text-white font-medium">{item.balance.toLocaleString()}</span>
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] text-brand-secondary uppercase block font-sans">Value</span>
+                <span className="text-white font-medium">{formatCurrency(item.valueUsd, currency)}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-secondary uppercase block font-sans">Entry / Mark</span>
+                <span className="text-brand-secondary block text-[11px]">
+                  {formatCurrency(item.avgPrice, currency)} / {formatCurrency(item.currentPrice, currency)}
+                </span>
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] text-brand-secondary uppercase block font-sans">P&amp;L</span>
+                <span className={`font-bold block ${item.pnl >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                  {item.pnl >= 0 ? "+" : ""}{formatCurrency(item.pnl, currency)}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+        {!filtered.length && (
+          <div className="rounded-xl border border-white/5 bg-white/[0.02] p-8 text-center text-xs text-brand-secondary">
+            No matching holdings in this account yet.
+          </div>
+        )}
+      </div>
     </section>
   </div>;
 }

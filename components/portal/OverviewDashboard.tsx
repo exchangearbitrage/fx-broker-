@@ -67,13 +67,117 @@ export function OverviewDashboard({ firstName }: { firstName?: string | null }) 
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
-        <article className="rounded-2xl border border-white/10 bg-brand-surface p-5">
-          <div className="flex items-center justify-between gap-4"><div><h2 className="font-heading text-lg font-bold text-white">Open positions</h2><p className="mt-1 text-xs text-brand-secondary">Current positions from your live account.</p></div><Link href="/dashboard/portfolio" className="inline-flex items-center gap-1 text-xs font-semibold text-brand-primary hover:underline">View assets <ArrowUpRight className="h-3.5 w-3.5" /></Link></div>
-          <div className="mt-5 overflow-x-auto"><table className="w-full min-w-[460px] text-left text-xs"><thead className="border-b border-white/10 text-brand-secondary"><tr><th className="p-3">Symbol</th><th className="p-3">Side</th><th className="p-3">Size</th><th className="p-3 text-right">Open P&amp;L</th></tr></thead><tbody className="divide-y divide-white/5">{data?.positions.map((position) => <tr key={position.id}><td className="p-3 font-semibold text-white">{position.symbol}</td><td className="p-3 capitalize text-brand-secondary">{position.side}</td><td className="p-3 text-white">{position.size.toLocaleString()}</td><td className={`p-3 text-right font-semibold ${position.pnl >= 0 ? "text-emerald-400" : "text-rose-400"}`}>{position.pnl >= 0 ? "+" : ""}{formatMoney(position.pnl)}</td></tr>)}{!loading && !data?.positions.length ? <tr><td colSpan={4} className="p-8 text-center text-brand-secondary">No open positions yet.</td></tr> : null}</tbody></table></div>
+        <article className="rounded-2xl border border-white/10 bg-brand-surface p-4 sm:p-5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className="font-heading text-lg font-bold text-white">Open positions</h2>
+              <p className="mt-1 text-xs text-brand-secondary">Current positions from your live account.</p>
+            </div>
+            <Link href="/dashboard/portfolio" className="inline-flex items-center gap-1 text-xs font-semibold text-brand-primary hover:underline">
+              View assets <ArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+
+          {/* Desktop Table */}
+          <div className="mt-5 hidden md:block overflow-x-auto">
+            <table className="w-full min-w-[460px] text-left text-xs">
+              <thead className="border-b border-white/10 text-brand-secondary">
+                <tr>
+                  <th className="p-3">Symbol</th>
+                  <th className="p-3">Side</th>
+                  <th className="p-3">Size</th>
+                  <th className="p-3 text-right">Open P&amp;L</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {data?.positions.map((position) => (
+                  <tr key={position.id} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="p-3 font-semibold text-white">{position.symbol}</td>
+                    <td className="p-3 capitalize text-brand-secondary">{position.side}</td>
+                    <td className="p-3 text-white">{position.size.toLocaleString()}</td>
+                    <td className={`p-3 text-right font-semibold ${position.pnl >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                      {position.pnl >= 0 ? "+" : ""}{formatMoney(position.pnl)}
+                    </td>
+                  </tr>
+                ))}
+                {!loading && !data?.positions.length ? (
+                  <tr>
+                    <td colSpan={4} className="p-8 text-center text-brand-secondary">
+                      No open positions yet.
+                    </td>
+                  </tr>
+                ) : null}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Position Cards */}
+          <div className="mt-4 block md:hidden space-y-2.5">
+            {data?.positions.map((position) => (
+              <div key={position.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/5 bg-white/[0.03] p-3">
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold text-white text-sm">{position.symbol}</span>
+                    <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
+                      position.side.toLowerCase() === "buy" ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"
+                    }`}>
+                      {position.side.toUpperCase()}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-xs text-brand-secondary">Size: {position.size.toLocaleString()}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] uppercase tracking-wider text-brand-secondary">Open P&amp;L</p>
+                  <p className={`font-mono text-sm font-bold ${position.pnl >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                    {position.pnl >= 0 ? "+" : ""}{formatMoney(position.pnl)}
+                  </p>
+                </div>
+              </div>
+            ))}
+            {!loading && !data?.positions.length ? (
+              <p className="rounded-xl border border-white/5 bg-white/[0.02] p-6 text-center text-xs text-brand-secondary">
+                No open positions yet.
+              </p>
+            ) : null}
+          </div>
         </article>
-        <article className="rounded-2xl border border-white/10 bg-brand-surface p-5">
-          <div className="flex items-center justify-between gap-4"><div><h2 className="font-heading text-lg font-bold text-white">Recent activity</h2><p className="mt-1 text-xs text-brand-secondary">Latest account ledger events.</p></div><Link href="/dashboard/portfolio?tab=ledger" className="inline-flex items-center gap-1 text-xs font-semibold text-brand-primary hover:underline">Ledger <ArrowUpRight className="h-3.5 w-3.5" /></Link></div>
-          <div className="mt-5 space-y-3">{data?.transactions.slice(0, 4).map((transaction) => <div key={transaction.id} className="flex items-center justify-between gap-3 rounded-xl bg-white/[0.03] p-3"><div><p className="text-sm font-semibold text-white">{transaction.type.replaceAll("_", " ")}</p><p className="mt-0.5 text-xs text-brand-secondary">{new Date(transaction.createdAt).toLocaleDateString()} · {transaction.status}</p></div><p className={`font-mono text-sm font-semibold ${transaction.amountUsd >= 0 ? "text-emerald-400" : "text-rose-400"}`}>{transaction.amountUsd >= 0 ? "+" : ""}{formatMoney(transaction.amountUsd)}</p></div>)}{!loading && !data?.transactions.length ? <p className="rounded-xl bg-white/[0.03] p-5 text-center text-sm text-brand-secondary">No account activity yet.</p> : null}</div>
+
+        <article className="rounded-2xl border border-white/10 bg-brand-surface p-4 sm:p-5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className="font-heading text-lg font-bold text-white">Recent activity</h2>
+              <p className="mt-1 text-xs text-brand-secondary">Latest account ledger events.</p>
+            </div>
+            <Link href="/dashboard/portfolio?tab=ledger" className="inline-flex items-center gap-1 text-xs font-semibold text-brand-primary hover:underline">
+              Ledger <ArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+
+          <div className="mt-4 sm:mt-5 space-y-2.5">
+            {data?.transactions.slice(0, 4).map((transaction) => (
+              <div key={transaction.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/5 bg-white/[0.03] p-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="truncate text-sm font-semibold text-white">{transaction.type.replaceAll("_", " ")}</p>
+                    <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] uppercase font-bold text-brand-secondary">
+                      {transaction.status}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-xs text-brand-secondary">
+                    {new Date(transaction.createdAt).toLocaleDateString()} {new Date(transaction.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                </div>
+                <p className={`shrink-0 font-mono text-sm font-semibold ${transaction.amountUsd >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                  {transaction.amountUsd >= 0 ? "+" : ""}{formatMoney(transaction.amountUsd)}
+                </p>
+              </div>
+            ))}
+            {!loading && !data?.transactions.length ? (
+              <p className="rounded-xl border border-white/5 bg-white/[0.02] p-6 text-center text-xs text-brand-secondary">
+                No account activity yet.
+              </p>
+            ) : null}
+          </div>
         </article>
       </section>
     </div>

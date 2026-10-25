@@ -1,10 +1,200 @@
 "use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { ManualPaymentForm } from "@/components/portal/ManualPaymentForm";
 import { AccountModeSwitcher } from "@/components/portal/AccountModeSwitcher";
 import { formatCurrency } from "@/lib/utils";
+
 type AccountType = "LIVE" | "DEMO";
-type Account = { id: string; type: AccountType; balance: number; equity: number; marginUsed: number; freeMargin: number; unrealizedPnl: number };
-type Transaction = { id: string; type: string; asset: string; amount: number; amountUsd: number; status: string; createdAt: string; txHash?: string };
-export function WalletFundsView({ currency = "USD" }: { currency?: string }) { const [accountType, setAccountType] = useState<AccountType>("LIVE"); const [accounts, setAccounts] = useState<Account[]>([]); const [transactions, setTransactions] = useState<Transaction[]>([]); const [loading, setLoading] = useState(true); const load = useCallback(async () => { setLoading(true); const [accountResponse, transactionResponse] = await Promise.all([fetch("/api/user/account", { cache: "no-store" }), fetch(`/api/wallet/transactions?accountType=${accountType}`, { cache: "no-store" })]); if (accountResponse.ok) setAccounts((await accountResponse.json()).accounts); if (transactionResponse.ok) setTransactions(await transactionResponse.json()); setLoading(false); }, [accountType]); useEffect(() => { void load(); }, [load]); const account = accounts.find((item) => item.type === accountType); return <div className="space-y-6"><div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-xs font-semibold uppercase tracking-widest text-brand-primary">Custody & funding</p><h1 className="mt-1 font-heading text-3xl font-bold text-white">Wallet & account balances</h1><p className="mt-2 text-sm text-brand-secondary">View balances and activity for one account mode at a time.</p></div><AccountModeSwitcher value={accountType} onChange={setAccountType} /></div>{accountType === "DEMO" ? <div className="rounded-xl border border-emerald-400/25 bg-emerald-400/10 p-4 text-sm text-emerald-100">Demo funds are virtual and remain completely separate from your Live wallet.</div> : null}<AccountCard account={account} currency={currency} />{accountType === "LIVE" ? <section className="rounded-2xl border border-brand-primary/25 bg-brand-primary/[0.04] p-5"><p className="text-xs font-semibold uppercase tracking-widest text-brand-primary">Fund live account</p><h2 className="mt-1 font-heading text-xl font-bold text-white">Submit a deposit payment</h2><p className="mt-1 text-sm text-brand-secondary">Your usable Live balance changes once processing is complete.</p><ManualPaymentForm kind="DEPOSIT" onSubmitted={load} /></section> : null}<section className="rounded-2xl border border-white/10 bg-brand-surface p-5"><div className="flex items-center justify-between"><div><h2 className="font-heading text-lg font-bold text-white">{accountType === "LIVE" ? "Live" : "Demo"} transaction history</h2><p className="mt-1 text-xs text-brand-secondary">Only events for the selected account are shown.</p></div>{loading && <span className="text-xs text-brand-secondary">Updating…</span>}</div><div className="mt-4 overflow-x-auto"><table className="w-full min-w-[620px] text-left text-xs"><thead className="border-b border-white/10 text-brand-secondary"><tr><th className="p-3">Event</th><th className="p-3">Amount</th><th className="p-3">Status</th><th className="p-3">Reference</th><th className="p-3 text-right">Time</th></tr></thead><tbody className="divide-y divide-white/5">{transactions.map((item) => <tr key={item.id}><td className="p-3 font-semibold text-white">{item.type.replaceAll("_", " ")}</td><td className={`p-3 font-mono ${item.amount >= 0 ? "text-emerald-400" : "text-rose-400"}`}>{item.amount >= 0 ? "+" : ""}{formatCurrency(item.amountUsd, currency)} <span className="text-brand-secondary">{item.asset}</span></td><td className="p-3"><span className="rounded-full bg-white/10 px-2 py-1">{item.status}</span></td><td className="p-3 text-brand-secondary">{item.txHash || "—"}</td><td className="p-3 text-right text-brand-secondary">{new Date(item.createdAt).toLocaleString()}</td></tr>)}{!loading && !transactions.length && <tr><td colSpan={5} className="p-6 text-center text-brand-secondary">No {accountType.toLowerCase()} account activity yet.</td></tr>}</tbody></table></div></section></div>; }
-function AccountCard({ account, currency }: { account?: Account; currency: string }) { return <article className="rounded-2xl border border-white/10 bg-brand-surface p-5"><p className="text-xs font-semibold uppercase tracking-widest text-brand-secondary">{account?.type === "DEMO" ? "Demo account" : "Live account"}</p><p className="mt-3 font-mono text-3xl font-bold text-white">{formatCurrency(account?.balance ?? 0, currency)}</p><div className="mt-4 grid grid-cols-2 gap-3 text-xs sm:grid-cols-4"><span className="text-brand-secondary">Equity<br /><b className="text-white">{formatCurrency(account?.equity ?? 0, currency)}</b></span><span className="text-brand-secondary">Used margin<br /><b className="text-white">{formatCurrency(account?.marginUsed ?? 0, currency)}</b></span><span className="text-brand-secondary">Free margin<br /><b className="text-brand-primary">{formatCurrency(account?.freeMargin ?? 0, currency)}</b></span><span className="text-brand-secondary">Open P&amp;L<br /><b className="text-white">{formatCurrency(account?.unrealizedPnl ?? 0, currency)}</b></span></div></article>; }
+type Account = {
+  id: string;
+  type: AccountType;
+  balance: number;
+  equity: number;
+  marginUsed: number;
+  freeMargin: number;
+  unrealizedPnl: number;
+};
+type Transaction = {
+  id: string;
+  type: string;
+  asset: string;
+  amount: number;
+  amountUsd: number;
+  status: string;
+  createdAt: string;
+  txHash?: string;
+};
+
+export function WalletFundsView({ currency = "USD" }: { currency?: string }) {
+  const [accountType, setAccountType] = useState<AccountType>("LIVE");
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const [accountResponse, transactionResponse] = await Promise.all([
+      fetch("/api/user/account", { cache: "no-store" }),
+      fetch(`/api/wallet/transactions?accountType=${accountType}`, { cache: "no-store" }),
+    ]);
+    if (accountResponse.ok) setAccounts((await accountResponse.json()).accounts);
+    if (transactionResponse.ok) setTransactions(await transactionResponse.json());
+    setLoading(false);
+  }, [accountType]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const account = accounts.find((item) => item.type === accountType);
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-brand-primary">Custody & funding</p>
+          <h1 className="mt-1 font-heading text-2xl font-bold text-white sm:text-3xl">Wallet & account balances</h1>
+          <p className="mt-2 text-sm text-brand-secondary">View balances and activity for one account mode at a time.</p>
+        </div>
+        <AccountModeSwitcher value={accountType} onChange={setAccountType} />
+      </div>
+
+      {accountType === "DEMO" ? (
+        <div className="rounded-xl border border-emerald-400/25 bg-emerald-400/10 p-4 text-sm text-emerald-100">
+          Demo funds are virtual and remain completely separate from your Live wallet.
+        </div>
+      ) : null}
+
+      <AccountCard account={account} currency={currency} />
+
+      {accountType === "LIVE" ? (
+        <section className="rounded-2xl border border-brand-primary/25 bg-brand-primary/[0.04] p-5">
+          <p className="text-xs font-semibold uppercase tracking-widest text-brand-primary">Fund live account</p>
+          <h2 className="mt-1 font-heading text-xl font-bold text-white">Submit a deposit payment</h2>
+          <p className="mt-1 text-sm text-brand-secondary">Your usable Live balance changes once processing is complete.</p>
+          <ManualPaymentForm kind="DEPOSIT" onSubmitted={load} />
+        </section>
+      ) : null}
+
+      <section className="rounded-2xl border border-white/10 bg-brand-surface p-4 sm:p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="font-heading text-lg font-bold text-white">
+              {accountType === "LIVE" ? "Live" : "Demo"} transaction history
+            </h2>
+            <p className="mt-1 text-xs text-brand-secondary">Only events for the selected account are shown.</p>
+          </div>
+          {loading && <span className="text-xs text-brand-secondary">Updating…</span>}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="mt-4 hidden md:block overflow-x-auto">
+          <table className="w-full min-w-[620px] text-left text-xs">
+            <thead className="border-b border-white/10 text-brand-secondary">
+              <tr>
+                <th className="p-3">Event</th>
+                <th className="p-3">Amount</th>
+                <th className="p-3">Status</th>
+                <th className="p-3">Reference</th>
+                <th className="p-3 text-right">Time</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {transactions.map((item) => (
+                <tr key={item.id} className="hover:bg-white/[0.02] transition-colors">
+                  <td className="p-3 font-semibold text-white">{item.type.replaceAll("_", " ")}</td>
+                  <td className={`p-3 font-mono ${item.amount >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                    {item.amount >= 0 ? "+" : ""}
+                    {formatCurrency(item.amountUsd, currency)} <span className="text-brand-secondary">{item.asset}</span>
+                  </td>
+                  <td className="p-3">
+                    <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] uppercase font-semibold">
+                      {item.status}
+                    </span>
+                  </td>
+                  <td className="p-3 text-brand-secondary font-mono">{item.txHash || "—"}</td>
+                  <td className="p-3 text-right text-brand-secondary">{new Date(item.createdAt).toLocaleString()}</td>
+                </tr>
+              ))}
+              {!loading && !transactions.length && (
+                <tr>
+                  <td colSpan={5} className="p-6 text-center text-brand-secondary">
+                    No {accountType.toLowerCase()} account activity yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="mt-4 block md:hidden space-y-3">
+          {transactions.map((item) => {
+            const isPositive = item.amount >= 0;
+            return (
+              <div
+                key={item.id}
+                className="rounded-xl border border-white/10 bg-white/[0.02] p-3.5 space-y-2.5 transition-colors"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-semibold text-white text-sm">
+                    {item.type.replaceAll("_", " ")}
+                  </span>
+                  <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] uppercase font-bold text-brand-secondary">
+                    {item.status}
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-xs text-brand-secondary">Amount ({item.asset})</span>
+                  <span className={`font-mono text-sm font-bold ${isPositive ? "text-emerald-400" : "text-rose-400"}`}>
+                    {isPositive ? "+" : ""}
+                    {formatCurrency(item.amountUsd, currency)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between border-t border-white/5 pt-2 text-[11px] text-brand-secondary">
+                  <span className="truncate max-w-[140px] font-mono text-[10px]">{item.txHash || "Internal STP"}</span>
+                  <span>{new Date(item.createdAt).toLocaleDateString()} {new Date(item.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                </div>
+              </div>
+            );
+          })}
+          {!loading && !transactions.length && (
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-6 text-center text-xs text-brand-secondary">
+              No {accountType.toLowerCase()} account activity yet.
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function AccountCard({ account, currency }: { account?: Account; currency: string }) {
+  return (
+    <article className="rounded-2xl border border-white/10 bg-brand-surface p-5">
+      <p className="text-xs font-semibold uppercase tracking-widest text-brand-secondary">
+        {account?.type === "DEMO" ? "Demo account" : "Live account"}
+      </p>
+      <p className="mt-3 font-mono text-3xl font-bold text-white">{formatCurrency(account?.balance ?? 0, currency)}</p>
+      <div className="mt-4 grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
+        <span className="text-brand-secondary">
+          Equity<br />
+          <b className="text-white">{formatCurrency(account?.equity ?? 0, currency)}</b>
+        </span>
+        <span className="text-brand-secondary">
+          Used margin<br />
+          <b className="text-white">{formatCurrency(account?.marginUsed ?? 0, currency)}</b>
+        </span>
+        <span className="text-brand-secondary">
+          Free margin<br />
+          <b className="text-brand-primary">{formatCurrency(account?.freeMargin ?? 0, currency)}</b>
+        </span>
+        <span className="text-brand-secondary">
+          Open P&amp;L<br />
+          <b className="text-white">{formatCurrency(account?.unrealizedPnl ?? 0, currency)}</b>
+        </span>
+      </div>
+    </article>
+  );
+}

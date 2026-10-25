@@ -333,6 +333,82 @@ function LedgerPanel({ transactions, liveBalance, currency, onRequested }: { tra
     </div>
   );
 }
-function LedgerTable({ transactions, currency }: { transactions: Transaction[]; currency: string }) { return <section className="rounded-2xl border border-white/10 bg-brand-surface p-5"><h2 className="font-heading text-lg font-bold text-white">Transaction ledger</h2><p className="mt-1 text-xs text-brand-secondary">Activity for the selected account only.</p><div className="mt-5 overflow-x-auto"><table className="w-full min-w-[620px] text-left text-xs"><thead className="border-b border-white/10 text-brand-secondary"><tr><th className="p-3">Event</th><th className="p-3">Amount</th><th className="p-3">Status</th><th className="p-3">Reference</th><th className="p-3 text-right">Time</th></tr></thead><tbody className="divide-y divide-white/5">{transactions.map((item) => <tr key={item.id}><td className="p-3 font-semibold text-white">{item.type.replaceAll("_", " ")}</td><td className={`p-3 font-mono ${item.amount >= 0 ? "text-emerald-400" : "text-rose-400"}`}>{item.amount >= 0 ? "+" : ""}{formatCurrency(item.amountUsd, currency)} <span className="text-brand-secondary">{item.asset}</span></td><td className="p-3"><span className="rounded-full bg-white/10 px-2 py-1 text-[10px]">{item.status}</span></td><td className="p-3 text-brand-secondary">{item.txHash || "—"}</td><td className="p-3 text-right text-brand-secondary">{new Date(item.createdAt).toLocaleString()}</td></tr>)}{!transactions.length && <tr><td colSpan={5} className="p-7 text-center text-brand-secondary">No ledger activity for this account yet.</td></tr>}</tbody></table></div></section>; }
+function LedgerTable({ transactions, currency }: { transactions: Transaction[]; currency: string }) {
+  return (
+    <section className="rounded-2xl border border-white/10 bg-brand-surface p-4 sm:p-5">
+      <h2 className="font-heading text-lg font-bold text-white">Transaction ledger</h2>
+      <p className="mt-1 text-xs text-brand-secondary">Activity for the selected account only.</p>
+      
+      {/* Desktop Table View */}
+      <div className="mt-5 hidden md:block overflow-x-auto">
+        <table className="w-full min-w-[620px] text-left text-xs">
+          <thead className="border-b border-white/10 text-brand-secondary">
+            <tr>
+              <th className="p-3">Event</th>
+              <th className="p-3">Amount</th>
+              <th className="p-3">Status</th>
+              <th className="p-3">Reference</th>
+              <th className="p-3 text-right">Time</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/5">
+            {transactions.map((item) => (
+              <tr key={item.id} className="hover:bg-white/[0.02] transition-colors">
+                <td className="p-3 font-semibold text-white">{item.type.replaceAll("_", " ")}</td>
+                <td className={`p-3 font-mono ${item.amount >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                  {item.amount >= 0 ? "+" : ""}{formatCurrency(item.amountUsd, currency)} <span className="text-brand-secondary">{item.asset}</span>
+                </td>
+                <td className="p-3">
+                  <span className="rounded-full bg-white/10 px-2 py-1 text-[10px] font-semibold">{item.status}</span>
+                </td>
+                <td className="p-3 text-brand-secondary font-mono">{item.txHash || "—"}</td>
+                <td className="p-3 text-right text-brand-secondary">{new Date(item.createdAt).toLocaleString()}</td>
+              </tr>
+            ))}
+            {!transactions.length && (
+              <tr>
+                <td colSpan={5} className="p-7 text-center text-brand-secondary">
+                  No ledger activity for this account yet.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="mt-4 block md:hidden space-y-3">
+        {transactions.map((item) => {
+          const isPositive = item.amount >= 0;
+          return (
+            <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3.5 space-y-2.5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-semibold text-white text-sm">{item.type.replaceAll("_", " ")}</span>
+                <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] uppercase font-bold text-brand-secondary">
+                  {item.status}
+                </span>
+              </div>
+              <div className="flex items-baseline justify-between">
+                <span className="text-xs text-brand-secondary">Amount ({item.asset})</span>
+                <span className={`font-mono text-sm font-bold ${isPositive ? "text-emerald-400" : "text-rose-400"}`}>
+                  {isPositive ? "+" : ""}{formatCurrency(item.amountUsd, currency)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between border-t border-white/5 pt-2 text-[11px] text-brand-secondary">
+                <span className="truncate max-w-[140px] font-mono text-[10px]">{item.txHash || "Internal STP"}</span>
+                <span>{new Date(item.createdAt).toLocaleDateString()} {new Date(item.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+              </div>
+            </div>
+          );
+        })}
+        {!transactions.length && (
+          <div className="rounded-xl border border-white/5 bg-white/[0.02] p-6 text-center text-xs text-brand-secondary">
+            No ledger activity for this account yet.
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
 function BalancesPanel({ account, currency, onRefresh }: { account?: TreasuryAccount; currency: string; onRefresh: () => void }) { return <section className="rounded-2xl border border-white/10 bg-brand-surface p-5"><div className="flex items-center justify-between"><div><h2 className="font-heading text-lg font-bold text-white">{account?.type === "DEMO" ? "Demo" : "Live"} account balance</h2><p className="mt-1 text-xs text-brand-secondary">This balance is isolated from your other account mode.</p></div><button type="button" onClick={onRefresh} className="rounded-lg p-2 text-brand-secondary hover:bg-white/10 hover:text-white" aria-label="Refresh balances"><RefreshCw className="h-4 w-4" /></button></div><div className="mt-5 rounded-2xl border border-white/10 bg-black/10 p-5"><p className="text-xs font-semibold uppercase tracking-widest text-brand-secondary">{account?.type ?? "Account"}</p><p className="mt-3 font-mono text-3xl font-bold text-white">{formatCurrency(account?.balance ?? 0, currency)}</p><div className="mt-5 grid grid-cols-2 gap-3 text-xs sm:grid-cols-4"><Value label="Equity" value={formatCurrency(account?.equity ?? 0, currency)} /><Value label="Used margin" value={formatCurrency(account?.marginUsed ?? 0, currency)} /><Value label="Free margin" value={formatCurrency(account?.freeMargin ?? 0, currency)} /><Value label="Open P&L" value={`${(account?.unrealizedPnl ?? 0) >= 0 ? "+" : ""}${formatCurrency(account?.unrealizedPnl ?? 0, currency)}`} /></div></div></section>; }
 function Value({ label, value }: { label: string; value: string }) { return <div><p className="text-brand-secondary">{label}</p><p className="mt-1 font-mono text-white">{value}</p></div>; }
